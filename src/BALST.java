@@ -151,6 +151,7 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getLevelOrderTraversal() {
+
         return null;
     }
 
@@ -251,7 +252,11 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
 
     private void insertHelper(BSTNode<K, V> node, K key, V value) {
         if (node == null)
-            node
+            node = new BSTNode<K, V>(key, value);
+        else if (key.compareTo(node.key) > 0)
+            insertHelper(node.right, key, value);
+        else
+            insertHelper(node.left, key, value);
     }
 
     /**
@@ -316,8 +321,15 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public void print() {
-        // TODO Auto-generated method stub
-
+        if(root == null)
+            System.out.print("Tree does not exist");
+        else{
+            printHelper(root);
+        }
     }
 
+    private void printHelper(BSTNode<K, V> node) {
+        if (node == null)
+            System.out.println("Tree is empty");
+    }
 }

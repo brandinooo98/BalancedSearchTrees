@@ -49,33 +49,42 @@ public class BALSTTest {
      */
     @Test
     void testBALST_001_insert_sorted_order_simple() {
+//        try {
+//            balst2.insert(10, "10");
+//            if (!balst2.getKeyAtRoot().equals(10))
+//                fail("avl insert at root does not work");
+//
+//            balst2.insert(20, "20");
+//            if (!balst2.getKeyOfRightChildOf(10).equals(20))
+//                fail("avl insert to right child of root does not work");
+//
+//            balst2.insert(30, "30");
+//            Integer k = balst2.getKeyAtRoot();
+//            if (!k.equals(20))
+//                fail("avl rotate does not work");
+//
+//            // IF rebalancing is working,
+//            // the tree should have 20 at the root
+//            // and 10 as its left child and 30 as its right child
+//
+//            Assert.assertEquals(balst2.getKeyAtRoot(), new Integer(20));
+//            Assert.assertEquals(balst2.getKeyOfLeftChildOf(20),new Integer(10));
+//            Assert.assertEquals(balst2.getKeyOfRightChildOf(20),new Integer(30));
+//
+//            balst2.print();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            fail( "Unexpected exception AVL 000: "+e.getMessage() );
+//        }
         try {
             balst2.insert(10, "10");
-            if (!balst2.getKeyAtRoot().equals(10))
-                fail("avl insert at root does not work");
-
-            balst2.insert(20, "20");
-            if (!balst2.getKeyOfRightChildOf(10).equals(20))
-                fail("avl insert to right child of root does not work");
-
-            balst2.insert(30, "30");
-            Integer k = balst2.getKeyAtRoot();
-            if (!k.equals(20))
-                fail("avl rotate does not work");
-
-            // IF rebalancing is working,
-            // the tree should have 20 at the root
-            // and 10 as its left child and 30 as its right child
-
-            Assert.assertEquals(balst2.getKeyAtRoot(), new Integer(20));
-            Assert.assertEquals(balst2.getKeyOfLeftChildOf(20),new Integer(10));
-            Assert.assertEquals(balst2.getKeyOfRightChildOf(20),new Integer(30));
-
-            balst2.print();
-
-        } catch (Exception e) {
+            balst2.insert(5, "5");
+            balst2.insert(12, "12");
+        } catch (IllegalNullKeyException e) {
             e.printStackTrace();
-            fail( "Unexpected exception AVL 000: "+e.getMessage() );
+        } catch (DuplicateKeyException e) {
+            e.printStackTrace();
         }
     }
 
