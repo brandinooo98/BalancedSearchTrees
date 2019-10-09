@@ -21,8 +21,6 @@ class BSTNode<K,V> {
     BSTNode<K,V> right;
     int balanceFactor;
     int height;
-    boolean isRed;
-    boolean isBlack;
 
 
     /**

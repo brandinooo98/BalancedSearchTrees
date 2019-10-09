@@ -1,9 +1,6 @@
 import java.util.List;
-
 /**
- *
- * Class to implement a BalanceSearchTree. Can be of type AVL or Red-Black.
- * Note which tree you implement here and as a comment when you submit.
+ * BALST constructs an AVL tree and holds its many functions
  *
  * @param <K> is the generic type of key
  * @param <V> is the generic type of value
@@ -40,8 +37,15 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public K getKeyOfLeftChildOf(K key) throws IllegalNullKeyException, KeyNotFoundException {
-        // TODO Auto-generated method stub
-        return key.left.key;
+        if(key == null)
+            throw new IllegalNullKeyException();
+        else {
+            BSTNode<K, V> node = search(root, key);
+            if (node == null)
+                throw new KeyNotFoundException();
+            else
+                return node.left.key;
+        }
     }
 
     /**
@@ -57,8 +61,15 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public K getKeyOfRightChildOf(K key) throws IllegalNullKeyException, KeyNotFoundException {
-        // TODO Auto-generated method stub
-        return key.right.key;
+        if(key == null)
+            throw new IllegalNullKeyException();
+        else {
+            BSTNode<K, V> node = search(root, key);
+            if (node == null)
+                throw new KeyNotFoundException();
+            else
+                return node.left.key;
+        }
     }
 
     /**
@@ -81,8 +92,12 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public int getHeight() {
-        // TODO Auto-generated method stub
-        return 0;
+        if(root == null)
+            return 0;
+        if(root.left == null && root.right == null)
+            return 1;
+        else
+            return heightHelper(root);
     }
 
     /**
@@ -95,7 +110,6 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getInOrderTraversal() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -109,7 +123,6 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getPreOrderTraversal() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -123,7 +136,6 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getPostOrderTraversal() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -139,7 +151,6 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getLevelOrderTraversal() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -151,15 +162,16 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public void insert(K key, V value) throws IllegalNullKeyException, DuplicateKeyException {
-        if (root == null)
-            root = new BSTNode<>(key, value);
-        K rightKey;
-        K leftKey;
-        if(key.compareTo(getKeyAtRoot()) > 0) {
-            if(getKeyOfRightChildOf(getKeyAtRoot()) == null)
-
-        }
-
+        if(key == null)
+            throw new IllegalNullKeyException();
+        else if(contains(key))
+            throw new DuplicateKeyException();
+        else if(root == null)
+            root = new BSTNode<K, V>(key, value);
+        else if(key.compareTo(root.key) > 0)
+            insertHelper(root, key, value);
+        else
+            insertHelper(root, key, value);
     }
 
     /**
@@ -183,8 +195,13 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public V get(K key) throws IllegalNullKeyException, KeyNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        if(key == null)
+            throw new IllegalNullKeyException();
+        BSTNode<K, V> node = search(root, key);
+        if(node == null)
+            throw new KeyNotFoundException();
+        else
+            return node.value;
     }
 
     /**
@@ -194,8 +211,47 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public boolean contains(K key) throws IllegalNullKeyException {
-        // TODO Auto-generated method stub
-        return false;
+        if(key == null)
+            throw new IllegalNullKeyException();
+        else {
+            try {
+                BSTNode<K, V> node = search(root, key);
+                if (node == null)
+                    throw new KeyNotFoundException();
+                else
+                    return true;
+            } catch (KeyNotFoundException e) {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @param node
+     * @param key
+     * @return
+     * @throws IllegalNullKeyException
+     */
+    private BSTNode<K, V> search(BSTNode<K, V> node, K key) throws IllegalNullKeyException {
+        if(key == null)
+            throw new IllegalNullKeyException();
+        else if(node.key.equals(key))
+            return node;
+        else if (node.key.compareTo(key) > 0)
+            return search(node.left, key);
+        else if (node.key.compareTo(key) < 0)
+            return search(node.right, key);
+        else
+            return null;
+    }
+
+    private int heightHelper(BSTNode<K, V> node) {
+        return 1 + Math.max(heightHelper(node.left), heightHelper(node.right) );
+    }
+
+    private void insertHelper(BSTNode<K, V> node, K key, V value) {
+        if (node == null)
+            node
     }
 
     /**
@@ -203,8 +259,14 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public int numKeys() {
-        // TODO Auto-generated method stub
-        return 0;
+        if (root == null)
+            return 0;
+        else
+            return count(root);
+    }
+
+    private int count(BSTNode<K, V> node) {
+        return (count(node.left) + 1 + count(node.right));
     }
 
     /**
