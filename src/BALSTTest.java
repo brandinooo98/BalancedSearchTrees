@@ -78,17 +78,31 @@ public class BALSTTest {
 //            fail( "Unexpected exception AVL 000: "+e.getMessage() );
 //        }
         try {
+//            balst2.insert(10, "10");
+//            balst2.insert(5, "5");
+//            balst2.insert(12, "12");
+//            balst2.insert(1, "1");
+//            balst2.insert(6, "6");
+//            balst2.insert(11, "11");
+//            balst2.insert(13, "13");
+//            balst2.insert(15, "15");
+//            balst2.remove(15);
+//            balst2.print();
+//            balst2.remove(12);
+//            balst2.print();
             balst2.insert(10, "10");
-            balst2.insert(5, "5");
-            balst2.insert(12, "12");
-            balst2.insert(1, "1");
-            balst2.insert(6, "6");
-            balst2.insert(11, "11");
-            balst2.insert(13, "13");
-            System.out.println(balst2.getInOrderTraversal());
-            System.out.println(balst2.getLevelOrderTraversal());
-            System.out.println(balst2.getPostOrderTraversal());
-            System.out.println(balst2.getPreOrderTraversal());
+            balst2.print();
+            balst2.insert(30, "10");
+            balst2.print();
+            balst2.insert(40, "10");
+            balst2.print();
+            balst2.insert(50, "10");
+            balst2.print();
+            balst2.insert(20, "10");
+            balst2.print();
+            balst2.insert(5, "10");
+            balst2.print();
+            balst2.insert(1, "10");
             balst2.print();
         } catch (IllegalNullKeyException e) {
             e.printStackTrace();
