@@ -1,3 +1,6 @@
+import com.sun.jdi.InterfaceType;
+
+import java.util.ArrayList;
 import java.util.List;
 /**
  * BALST constructs an AVL tree and holds its many functions
@@ -110,7 +113,27 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getInOrderTraversal() {
-        return null;
+        List<K> list = new ArrayList<>();
+        if(root == null)
+            return list;
+        else {
+            inOrderHelper(root, list);
+            return list;
+        }
+    }
+
+    private void inOrderHelper(BSTNode<K, V> node, List<K> list) {
+        if (node == null)
+            return;
+
+        /* first recur on left child */
+        inOrderHelper(node.left, list);
+
+        /* then print the data of node */
+        list.add(node.key);
+
+        /* now recur on right child */
+        inOrderHelper(node.right, list);
     }
 
     /**
@@ -123,7 +146,27 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getPreOrderTraversal() {
-        return null;
+        List<K> list = new ArrayList<>();
+        if(root == null)
+            return list;
+        else {
+            preOrderHelper(root, list);
+            return list;
+        }
+    }
+
+    private void preOrderHelper(BSTNode<K, V> node, List<K> list) {
+        if (node == null)
+            return;
+
+        /* first print data of node */
+        list.add(node.key);
+
+        /* then recur on left sutree */
+        preOrderHelper(node.left, list);
+
+        /* now recur on right subtree */
+        preOrderHelper(node.right, list);
     }
 
     /**
@@ -136,7 +179,27 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getPostOrderTraversal() {
-        return null;
+        List<K> list = new ArrayList<>();
+        if(root == null)
+            return list;
+        else {
+            postOrderHelper(root, list);
+            return list;
+        }
+    }
+
+    private void postOrderHelper(BSTNode<K, V> node, List<K> list) {
+        if (node == null)
+            return;
+
+        // first recur on left subtree
+        postOrderHelper(node.left, list);
+
+        // then recur on right subtree
+        postOrderHelper(node.right, list);
+
+        // now deal with the node
+        list.add(node.key);
     }
 
     /**
@@ -151,8 +214,27 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public List<K> getLevelOrderTraversal() {
+        List<K> list = new ArrayList<>();
+        int height = getHeight();
+        for (int level = 1; level <= height; level++)
+            levelOrderHelper(root, level, list);
+        return list;
+    }
 
-        return null;
+    /**
+     * @param node
+     * @param level
+     * @param list
+     */
+    private void levelOrderHelper(BSTNode<K, V> node, int level, List<K> list) {
+        if (root == null)
+            return;
+        if (level == 1)
+            list.add(node.key);
+        else if (level > 1) {
+            levelOrderHelper(node.left, level - 1, list);
+            levelOrderHelper(node.right, level - 1, list);
+        }
     }
 
     /**
@@ -165,14 +247,14 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
     public void insert(K key, V value) throws IllegalNullKeyException, DuplicateKeyException {
         if(key == null)
             throw new IllegalNullKeyException();
-        else if(contains(key))
-            throw new DuplicateKeyException();
         else if(root == null)
             root = new BSTNode<K, V>(key, value);
+        else if(contains(key))
+            throw new DuplicateKeyException();
         else if(key.compareTo(root.key) > 0)
-            insertHelper(root, key, value);
+            insertHelper(root, key, value, null);
         else
-            insertHelper(root, key, value);
+            insertHelper(root, key, value, null);
     }
 
     /**
@@ -183,7 +265,7 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public boolean remove(K key) throws IllegalNullKeyException, KeyNotFoundException {
-        // TODO Auto-generated method stub
+        search(root, key);
         return false;
     }
 
@@ -236,6 +318,8 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
     private BSTNode<K, V> search(BSTNode<K, V> node, K key) throws IllegalNullKeyException {
         if(key == null)
             throw new IllegalNullKeyException();
+        else if(node == null)
+            return null;
         else if(node.key.equals(key))
             return node;
         else if (node.key.compareTo(key) > 0)
@@ -247,16 +331,92 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
     }
 
     private int heightHelper(BSTNode<K, V> node) {
-        return 1 + Math.max(heightHelper(node.left), heightHelper(node.right) );
+        if(node == null)
+            return 0;
+        else
+            return 1 + Math.max(heightHelper(node.left), heightHelper(node.right) );
     }
 
-    private void insertHelper(BSTNode<K, V> node, K key, V value) {
-        if (node == null)
-            node = new BSTNode<K, V>(key, value);
+    private void insertHelper(BSTNode<K, V> node, K key, V value, BSTNode<K, V> parent) {
+        if (node == null) {
+            if (key.compareTo(parent.key) > 0)
+                parent.right = new BSTNode<K, V>(key, value);
+            else
+                parent.left = new BSTNode<K, V>(key, value);
+        }
         else if (key.compareTo(node.key) > 0)
-            insertHelper(node.right, key, value);
+            insertHelper(node.right, key, value, node);
         else
-            insertHelper(node.left, key, value);
+            insertHelper(node.left, key, value, node);
+    }
+
+    /**
+     * @param node
+     * @param key
+     * @return
+     */
+    private BSTNode<K, V> removeHelper(BSTNode<K, V> node, K key) {
+        // STEP 1: PERFORM STANDARD BST DELETE
+        if (node == null)
+            return node;
+
+        // If the key to be deleted is smaller than
+        // the root's key, then it lies in left subtree
+        if (key.compareTo(node.key) < 0)
+            node.left = removeHelper(node.left, key);
+
+            // If the key to be deleted is greater than the
+            // root's key, then it lies in right subtree
+        else if (key.compareTo(node.key) > 0)
+            node.right = removeHelper(node.right, key);
+
+            // if key is same as root's key, then this is the node
+            // to be deleted
+        else {
+            // node with only one child or no child
+            if ((node.left == null) || (node.right == null)) {
+                BSTNode<K, V> temp = null;
+                if (temp == node.left)
+                    temp = node.right;
+                else
+                    temp = node.left;
+
+                // No child case
+                if (temp == null) {
+                    temp = node;
+                    node = null;
+                }
+                else // One child case
+                    node = temp; // Copy the contents of
+                // the non-empty child
+            }
+            else {
+                // node with two children: Get the inorder
+                // successor (smallest in the right subtree)
+                BSTNode<K, V> temp = smallestNode(node.right);
+
+                // Copy the inorder successor's data to this node
+                node.key = temp.key;
+
+                // Delete the inorder successor
+                node.right = removeHelper(node.right, temp.key);
+            }
+        }
+        // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
+        root.height = heightHelper(node);
+        return null;
+    }
+
+    /**
+     * @param node
+     * @return
+     */
+    BSTNode<K, V> smallestNode(BSTNode<K, V> node){
+        BSTNode<K, V> runner = node;
+        /* loop down to find the leftmost leaf */
+        while (runner.left != null)
+            runner = runner.left;
+        return runner;
     }
 
     /**
@@ -324,12 +484,23 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
         if(root == null)
             System.out.print("Tree does not exist");
         else{
-            printHelper(root);
+            int height = getHeight();
+            for (int level = 1; level <= height; level++) {
+                printHelper(root, level);
+                System.out.println("");
+            }
         }
     }
 
-    private void printHelper(BSTNode<K, V> node) {
-        if (node == null)
-            System.out.println("Tree is empty");
+    private void printHelper(BSTNode<K, V> node, int level) {
+        if (root == null)
+            return;
+        if (level == 1) {
+            System.out.print(node.key + "  ");
+        }
+        else{
+            printHelper(node.left, level - 1);
+            printHelper(node.right, level - 1);
+        }
     }
 }

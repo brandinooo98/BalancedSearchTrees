@@ -81,6 +81,15 @@ public class BALSTTest {
             balst2.insert(10, "10");
             balst2.insert(5, "5");
             balst2.insert(12, "12");
+            balst2.insert(1, "1");
+            balst2.insert(6, "6");
+            balst2.insert(11, "11");
+            balst2.insert(13, "13");
+            System.out.println(balst2.getInOrderTraversal());
+            System.out.println(balst2.getLevelOrderTraversal());
+            System.out.println(balst2.getPostOrderTraversal());
+            System.out.println(balst2.getPreOrderTraversal());
+            balst2.print();
         } catch (IllegalNullKeyException e) {
             e.printStackTrace();
         } catch (DuplicateKeyException e) {
