@@ -69,7 +69,7 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
             if (node == null)
                 throw new KeyNotFoundException();
             else
-                return node.left.key;
+                return node.right.key;
         }
     }
 
@@ -270,9 +270,10 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
     public void insert(K key, V value) throws IllegalNullKeyException, DuplicateKeyException {
         if (key == null)
             throw new IllegalNullKeyException();
-        else if (root == null)
+        else if (root == null) {
+            numKeys++;
             root = new BSTNode<K, V>(key, value);
-        else if (contains(key))
+        } else if (contains(key))
             throw new DuplicateKeyException();
         else if (key.compareTo(root.key) > 0)
             insertHelper(root, key, value, null);
@@ -289,12 +290,14 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      * @param parent
      */
     private void insertHelper(BSTNode<K, V> node, K key, V value, BSTNode<K, V> parent) throws IllegalNullKeyException {
-        numKeys++;
         if (node == null) {
-            if (key.compareTo(parent.key) > 0)
+            if (key.compareTo(parent.key) > 0) {
                 parent.right = new BSTNode<K, V>(key, value);
-            else
+                numKeys++;
+            } else {
                 parent.left = new BSTNode<K, V>(key, value);
+                numKeys++;
+            }
         } else if (key.compareTo(node.key) > 0)
             insertHelper(node.right, key, value, node);
         else
@@ -309,7 +312,7 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
     private BSTNode<K, V> rightRotation(BSTNode<K, V> node) throws IllegalNullKeyException {
         BSTNode<K, V> leftChild = node.left;
         BSTNode<K, V> leftGrandChild = null;
-        if(leftChild != null) {
+        if (leftChild != null) {
             leftGrandChild = leftChild.right;
             leftChild.right = node;
             node.left = leftGrandChild;
@@ -326,7 +329,7 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
     private BSTNode<K, V> leftRotation(BSTNode<K, V> node) throws IllegalNullKeyException {
         BSTNode<K, V> rightChild = node.right;
         BSTNode<K, V> rightGrandChild = null;
-        if(rightChild != null) {
+        if (rightChild != null) {
             rightGrandChild = rightChild.left;
             rightChild.left = node;
             node.right = rightGrandChild;
@@ -363,32 +366,31 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
                 if (node.right.balanceFactor > 0) {
                     node.right = rightRotation(node.right);
                 }
-                node = leftRotation(node);
-                if(i == 0)
+                if (node == root)
+                    node = leftRotation(node);
+                else {
+                    List<BSTNode<K, V>> listParent = new ArrayList<>();
+                    BSTNode<K, V> parent = parentSearch(root, node.key, listParent);
+                    parent.right = leftRotation(node);
+                }
+                if (i == 0)
                     root = node;
-            }
-            else if (node != null && node.balanceFactor > 1) {
+            } else if (node != null && node.balanceFactor > 1) {
                 if (node.left.balanceFactor < 0) {
                     node.left = leftRotation(node.left);
+                    print();
                 }
-                node = rightRotation(node);
-                if(i == 0)
+                if(node == root)
+                    node = rightRotation(node);
+                else {
+                    List<BSTNode<K, V>> listParent = new ArrayList<>();
+                    BSTNode<K, V> parent = parentSearch(root, node.key, listParent);
+                    parent.left = rightRotation(node);
+                }
+                print();
+                if (i == 0)
                     root = node;
             }
-//            if(node.left == null && node.balanceFactor < -1 && node.key.compareTo(node.right.key) < 0)
-//
-//            if (node.left != null && node.balanceFactor > 1 && node.key.compareTo(node.left.key) < 0) {
-//                node.left = leftRotation(node.left);
-//                rightRotation(node);
-//            }
-//            if (node.left != null && node.balanceFactor > 1 && node.key.compareTo(node.left.key) > 0)
-//                rightRotation(node);
-//            if (node.right != null && node.balanceFactor < -1 && node.key.compareTo(node.right.key) < 0) {
-//                node.right = rightRotation(node.right);
-//                leftRotation(node);
-//            }
-//            if (node.right != null && node.balanceFactor < -1 && node.key.compareTo(node.right.key) > 0)
-//                leftRotation(node);
         }
     }
 
@@ -412,6 +414,9 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
                 return false;
             else {
                 numKeys--;
+                print();
+                updateHeightAndBalanceFactor();
+                balanceTree();
                 return true;
             }
         }
@@ -475,10 +480,10 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
             return list.get(list.size() - 1);
         else if (node.key.compareTo(key) > 0) {
             list.add(node);
-            return search(node.left, key);
+            return parentSearch(node.left, key, list);
         } else if (node.key.compareTo(key) < 0) {
             list.add(node);
-            return search(node.right, key);
+            return parentSearch(node.right, key, list);
         } else
             return null;
     }
@@ -552,21 +557,7 @@ public class BALST<K extends Comparable<K>, V> implements BALSTADT<K, V> {
      */
     @Override
     public int numKeys() {
-        if (root == null)
-            return 0;
-        else
-            return count(root);
-    }
-
-    /**
-     * @param node
-     * @return
-     */
-    private int count(BSTNode<K, V> node) {
-        if (node == null)
-            return 0;
-        else
-            return (count(node.left) + 1 + count(node.right));
+        return numKeys;
     }
 
     /**

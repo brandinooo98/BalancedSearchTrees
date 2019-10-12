@@ -49,65 +49,33 @@ public class BALSTTest {
      */
     @Test
     void testBALST_001_insert_sorted_order_simple() {
-//        try {
-//            balst2.insert(10, "10");
-//            if (!balst2.getKeyAtRoot().equals(10))
-//                fail("avl insert at root does not work");
-//
-//            balst2.insert(20, "20");
-//            if (!balst2.getKeyOfRightChildOf(10).equals(20))
-//                fail("avl insert to right child of root does not work");
-//
-//            balst2.insert(30, "30");
-//            Integer k = balst2.getKeyAtRoot();
-//            if (!k.equals(20))
-//                fail("avl rotate does not work");
-//
-//            // IF rebalancing is working,
-//            // the tree should have 20 at the root
-//            // and 10 as its left child and 30 as its right child
-//
-//            Assert.assertEquals(balst2.getKeyAtRoot(), new Integer(20));
-//            Assert.assertEquals(balst2.getKeyOfLeftChildOf(20),new Integer(10));
-//            Assert.assertEquals(balst2.getKeyOfRightChildOf(20),new Integer(30));
-//
-//            balst2.print();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            fail( "Unexpected exception AVL 000: "+e.getMessage() );
-//        }
         try {
-//            balst2.insert(10, "10");
-//            balst2.insert(5, "5");
-//            balst2.insert(12, "12");
-//            balst2.insert(1, "1");
-//            balst2.insert(6, "6");
-//            balst2.insert(11, "11");
-//            balst2.insert(13, "13");
-//            balst2.insert(15, "15");
-//            balst2.remove(15);
-//            balst2.print();
-//            balst2.remove(12);
-//            balst2.print();
             balst2.insert(10, "10");
+            if (!balst2.getKeyAtRoot().equals(10))
+                fail("avl insert at root does not work");
+
+            balst2.insert(20, "20");
+            if (!balst2.getKeyOfRightChildOf(10).equals(20))
+                fail("avl insert to right child of root does not work");
+
+            balst2.insert(30, "30");
+            Integer k = balst2.getKeyAtRoot();
+            if (!k.equals(20))
+                fail("avl rotate does not work");
+
+            // IF rebalancing is working,
+            // the tree should have 20 at the root
+            // and 10 as its left child and 30 as its right child
+
+            Assert.assertEquals(balst2.getKeyAtRoot(), new Integer(20));
+            Assert.assertEquals(balst2.getKeyOfLeftChildOf(20),new Integer(10));
+            Assert.assertEquals(balst2.getKeyOfRightChildOf(20),new Integer(30));
+
             balst2.print();
-            balst2.insert(30, "10");
-            balst2.print();
-            balst2.insert(40, "10");
-            balst2.print();
-            balst2.insert(50, "10");
-            balst2.print();
-            balst2.insert(20, "10");
-            balst2.print();
-            balst2.insert(5, "10");
-            balst2.print();
-            balst2.insert(1, "10");
-            balst2.print();
-        } catch (IllegalNullKeyException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (DuplicateKeyException e) {
-            e.printStackTrace();
+            fail( "Unexpected exception AVL 000: "+e.getMessage() );
         }
     }
 
@@ -118,9 +86,18 @@ public class BALSTTest {
      */
     @Test
     void testBALST_002_insert_reversed_sorted_order_simple() {
-
-        // TODO: implement this test
-
+        try {
+            balst2.insert(30, "30");
+            balst2.insert(20, "20");
+            balst2.insert(10, "10");
+            if (!(balst2.getKeyAtRoot() == 20 && balst2.getKeyOfRightChildOf(balst2.getKeyAtRoot()) == 30 && balst2.getKeyOfLeftChildOf(balst2.getKeyAtRoot()) == 10)) {
+                balst2.print();
+                fail("Rebalance did not occur correctly");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Unexpected exception AVL 000: "+e.getMessage() );
+        }
     }
 
     /**
@@ -134,9 +111,18 @@ public class BALSTTest {
      */
     @Test
     void testBALST_003_insert_smallest_largest_middle_order_simple() {
-
-        // TODO: implement this test
-
+        try {
+            balst2.insert(10, "10");
+            balst2.insert(30, "30");
+            balst2.insert(20, "20");
+            if (!(balst2.getKeyAtRoot() == 20 && balst2.getKeyOfRightChildOf(balst2.getKeyAtRoot()) == 30 && balst2.getKeyOfLeftChildOf(balst2.getKeyAtRoot()) == 10)) {
+                balst2.print();
+                fail("Rebalance did not occur correctly");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Unexpected exception AVL 000: "+e.getMessage() );
+        }
     }
 
     /**
@@ -150,14 +136,67 @@ public class BALSTTest {
      */
     @Test
     void testBALST_004_insert_largest_smallest_middle_order_simple() {
-
-        // TODO: implement this test
-
+        try {
+            balst2.insert(30, "30");
+            balst2.insert(10, "10");
+            balst2.insert(20, "20");
+            if (!(balst2.getKeyAtRoot() == 20 && balst2.getKeyOfRightChildOf(balst2.getKeyAtRoot()) == 30 && balst2.getKeyOfLeftChildOf(balst2.getKeyAtRoot()) == 10)) {
+                balst2.print();
+                fail("Rebalance did not occur correctly");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Unexpected exception AVL 000: "+e.getMessage() );
+        }
     }
 
+    @Test
+    void testBALST_005_numKeys() {
+        try {
+            balst2.insert(30, "30");
+            balst2.insert(10, "10");
+            balst2.insert(20, "20");
+            balst2.insert(60, "60");
+            balst2.insert(1, "1");
+            balst2.insert(3, "3");
+            balst2.insert(45, "45");
+            balst2.insert(21, "21");
+            balst2.insert(15, "15");
+            if(balst2.numKeys() != 9)
+                fail("numKey did not count the correct amount of keys it returned: " + balst2.numKeys());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Unexpected exception AVL 000: "+e.getMessage() );
+        }
+    }
 
-    // TODO: Add your own tests
-
+    @Test
+    void testBALST_006_mass_remove() {
+        try {
+            balst2.insert(30, "30");
+            balst2.insert(10, "10");
+            balst2.insert(20, "20");
+            balst2.insert(60, "60");
+            balst2.insert(1, "1");
+            balst2.insert(3, "3");
+            balst2.insert(45, "45");
+            balst2.insert(21, "21");
+            balst2.insert(15, "15");
+            balst2.remove(30);
+            balst2.remove(10);
+            balst2.remove(20);
+            balst2.remove(60);
+            balst2.remove(1);
+            balst2.remove(3);
+            balst2.remove(45);
+            balst2.remove(21);
+            balst2.remove(15);
+            System.out.println(balst2.getInOrderTraversal());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Unexpected exception AVL 000: "+e.getMessage() );
+        }
+    }
     // Add tests to make sure that rebalancing occurs even if the
     // tree is larger.   Does it maintain it's balance?
     // Does the height of the tree reflect it's actual height
